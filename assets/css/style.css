@@ -1,0 +1,299 @@
+/* Google Fonts import */
+@import url("https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400..900;1,400..900&family=Audiowide&family=Bangers&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Lexend+Exa:wght@100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Orbitron:wght@400..900&family=Oswald:wght@200..700&family=Poiret+One&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap");
+
+/* CSS Variables */
+:root {
+  --primary-color: #0cc3eb;
+  /* light blue */
+  --secondary-color: #183650;
+  /* dark blue */
+  --tertiary-color: #e3d050;
+  /* bright yellow */
+  --highlight-color: #d72cc4;
+  /* neon pink */
+  --primary-font: "Orbitron", sans-serif;
+  --button-colour: #085B6E;
+}
+
+html {
+  min-height: 100dvh
+}
+
+body {
+  background-color: var(--secondary-color);
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2)),
+    url("../images/keyboard.jpg") center center/cover no-repeat fixed;
+  font-family: var(--primary-font);
+  margin: 0;
+}
+
+main {
+  flex: 1;
+}
+
+section {
+  padding-bottom: 1rem;
+}
+
+footer {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  text-align: center;
+  width: 100%;
+  font-size: 1rem;
+  max-height: 10rem;
+  margin-bottom: 0;
+}
+
+/* This is where formatting for logo should be */
+.header-logo {
+  background: url("../images/cb_logo.png") no-repeat center center/cover;
+  padding: 20px;
+  width: 200px;
+  height: 200px;
+  margin: 50px;
+}
+
+.game-intro {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 8px solid var(--highlight-color);
+  width: 90%;
+  /* Adjust the width as needed */
+  margin: 0 auto;
+  /* Center the element */
+  font-size: 1.3rem;
+}
+
+#start-game-button {
+  background-color: var(--button-colour);
+}
+
+/* Accordion text */
+.game-intro ol {
+  font-size: 1rem;
+  /* Adjust the font size as needed */
+  background-color: var(--button-colour);
+  color: white;
+}
+
+.accordion-item {
+  background-color: var(--button-colour);
+  color: white;
+}
+
+#accordion-button {
+  text-align: center;
+  max-width: 95%;
+}
+
+#accordion-button button:hover {
+  background-color: none;
+}
+
+/* Accordion */
+#rulesAccordion {
+  margin-top: 20px;
+  text-align: center;
+  max-width: 70%;
+  padding: 0;
+}
+
+/* Year dropdown box */
+.form-select {
+  width: 70%;
+  margin: auto;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  background-color: var(--button-colour);
+  color: white;
+}
+
+
+
+/* Card styling */
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-bottom: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+  flex-grow: 1;
+  align-items: center;
+  border: 2px solid var(--highlight-color);
+  min-height: 10vh;
+}
+
+.game-page .card:hover {
+  transform: scale(1.05);
+}
+
+/* Song image */
+.game-page .card img {
+  border-radius: 50%;
+  border: 2px solid #333;
+  width: 15rem;
+  height: auto;
+}
+
+/* Song title */
+.game-page .card h3 {
+  margin-top: 5px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+/* Artist name */
+.game-page .card p {
+  font-size: 1em;
+  color: #666;
+}
+
+/* Question section */
+.game-page .question {
+  margin-top: 20px;
+}
+
+.notifications {
+  color: white;
+
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Buttons */
+.game-page button {
+  background: var(--highlight-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  max-width: 80%;
+}
+
+.game-page button:hover {
+  background: #d72cc34b;
+}
+
+
+
+button:disabled,
+button:disabled:hover {
+  background: #919191;
+  cursor: not-allowed;
+}
+
+/* End screen styling */
+.game-page #song-container h2 {
+  color: #333;
+  font-size: 1.5em;
+}
+
+.game-page #song-container {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.game-page #score-tracking p {
+  color: white;
+}
+
+.game-page audio {
+  width: 90%;
+}
+
+.game-page .vs {
+  font-size: 1em;
+  font-weight: bold;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.8);
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 2px solid var(--highlight-color);
+  padding-top: 5px;
+}
+
+/* Style for upcoming (next) song */
+.game-page .upcoming {
+  opacity: 0.5;
+  filter: blur(4px);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hide peak position text */
+.game-page .chart-position.hidden {
+  visibility: hidden;
+}
+
+#song-container {
+  display: none;
+}
+
+#fb-share-button {
+  background: #3b5998;
+  border-radius: 3px;
+  font-weight: 600;
+  padding: 5px 8px;
+  display: inline-block;
+  position: static;
+  text-align: center;
+}
+
+#fb-share {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+#fb-share-button:hover {
+  cursor: pointer;
+  background: #213a6f;
+}
+
+#fb-share-button svg {
+  width: 18px;
+  fill: white;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+#fb-share-button span {
+  vertical-align: middle;
+  color: white;
+  font-size: 14px;
+  padding: 0 3px;
+}
+
+#game-over {
+  background: white;
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+  display: none;
+}
+
+.play-now-btn {
+  font-size: 1.2rem;
+  /* Increase the font size for the button */
+}
+
+/* Media Queries */
+
+/* Only mobiles */
