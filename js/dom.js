@@ -1,5 +1,6 @@
 /* eslint-env browser */
 
+/*
 ;(function () {
     try {
       const onMessage = ({ data }) => {
@@ -69,3 +70,14 @@
       console.error('Error in web worker setup:', e);
     }
   })()
+
+// Expose startGame to the global scope
+window.startGame = startGame; */
+
+if ('caches' in window) {
+  // Use caches API
+} else {
+  console.warn('Caches API is not supported in this environment.');
+}
+
+<script src="assets/script.js"></script>
