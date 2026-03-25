@@ -1,34 +1,33 @@
-// Initial Global Variable Definition
-let songs = []; // Global array to store songs
-let currentIndex = 0; // Track which song we're on
-let score = 0; // Track correct answers
-let gameSongs = []; // Will hold the 11 random songs
-lastScoreDisplay(); // Display last score if available
+// Global Variables
+let songs = [];
+let gameSongs = [];
+let currentIndex = 0;
+let score = 0;
 
-// Function to display the last score if available (stored locally)
+lastScoreDisplay(); // Show previous score on page load
+
+// Display last score if available
 function lastScoreDisplay() {
   const scoreUpdate = document.getElementById("game-intro");
   const previousScore = localStorage.getItem("score");
 
   if (previousScore) {
-    const scoreUpdateParagraph = document.createElement("p");
-    scoreUpdateParagraph.id = "previous-score";
-
+    const scoreParagraph = document.createElement("p");
+    scoreParagraph.id = "previous-score";
     if (document.getElementById("previous-score")) {
       document.getElementById("previous-score").remove();
     }
 
-    if (previousScore < 10) {
-      scoreUpdateParagraph.textContent = `Your last score was ${previousScore} / 10. Can you beat it?`;
-    } else if (previousScore == 10) {
-      scoreUpdateParagraph.textContent = `Congratulations! You previously scored ${previousScore} / 10. Can you do it again?`;
-    }
+    scoreParagraph.textContent =
+      previousScore < 10
+        ? `Your last score was ${previousScore} / 10. Can you beat it?`
+        : `Congratulations! You previously scored ${previousScore} / 10. Can you do it again?`;
 
-    scoreUpdate.appendChild(scoreUpdateParagraph);
+    scoreUpdate.appendChild(scoreParagraph);
   }
 }
 
-// Start Game Function (Dynamic JSON Path)
+// Start the game
 function startGame() {
   const selectedYear = document.getElementById("yearDropdown").value;
   if (selectedYear === "placeholder") {
@@ -36,20 +35,18 @@ function startGame() {
     return;
   }
 
-  // Reset global variables
+  // Reset game variables
   songs = [];
+  gameSongs = [];
   currentIndex = 0;
   score = 0;
-  gameSongs = [];
   document.getElementById("song-container").style.display = "none";
 
-  // Try main folder first
   let jsonPath = `./assets/json/${selectedYear}-EOY-Songs.json`;
 
   fetch(jsonPath)
     .then((response) => {
       if (!response.ok) {
-        // If file not found, fallback to 'songs' subfolder
         jsonPath = `./assets/json/songs/${selectedYear}-EOY-Songs.json`;
         return fetch(jsonPath);
       }
@@ -69,6 +66,7 @@ function startGame() {
           audio: song.audioSrc,
         })
       );
+
       gameSongs = getRandomSongs();
       showNextSong();
 
@@ -81,16 +79,18 @@ function startGame() {
     });
 }
 
-// Function to get 11 random songs from the songs array (1 start + 10 questions)
+// Pick 11 random valid songs
 function getRandomSongs(count = 11) {
-  const validSongs = songs.filter((song) => song.audio && song.image.includes("http"));
+  const validSongs = songs.filter(
+    (song) => song.audio && song.image.includes("http")
+  );
   const shuffled = validSongs.sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
+  return shuffled.slice(0, Math.min(count, shuffled.length));
 }
 
-// Function to display the next song in the game until 10 songs have been played
+// Show the next song pair
 function showNextSong() {
-  if (currentIndex >= 10) {
+  if (currentIndex >= gameSongs.length - 1 || gameSongs.length === 0) {
     endGame();
     return;
   }
@@ -120,14 +120,12 @@ function showNextSong() {
         <div class="vs">
           <h3>Banger or Clanger?</h3>
           <h4>Did the new song on the right chart:</h4>
-          <button class="game-button" onclick="guess('lower', ${currentSong.peak}, ${nextSong.peak})">Lower</button>
-          <button class="game-button" onclick="guess('same', ${currentSong.peak}, ${nextSong.peak})">Same</button>
-          <button class="game-button" onclick="guess('higher', ${currentSong.peak}, ${nextSong.peak})">Higher</button>
+          <button class="game-button" onclick="guess('lower')">Lower</button>
+          <button class="game-button" onclick="guess('same')">Same</button>
+          <button class="game-button" onclick="guess('higher')">Higher</button>
 
           <div id="notifications" class="row m-auto"></div>
-          <div class="row m-auto">
-            <p id="score-tracking">Score: ${score} / 10</p>
-          </div>
+          <p id="score-tracking">Score: ${score} / 10</p>
         </div>
       </div>
 
@@ -150,39 +148,36 @@ function showNextSong() {
   `;
 }
 
-// Function to check if the player's guess was correct
-function guess(playerGuess, currentPeak, nextPeak) {
+// Handle the guess
+function guess(playerGuess) {
+  const currentSong = gameSongs[currentIndex];
+  const nextSong = gameSongs[currentIndex + 1];
+
   let correct = false;
+  if (playerGuess === "higher" && nextSong.peak > currentSong.peak) correct = true;
+  if (playerGuess === "lower" && nextSong.peak < currentSong.peak) correct = true;
+  if (playerGuess === "same" && nextSong.peak === currentSong.peak) correct = true;
 
-  if (playerGuess === "higher" && nextPeak > currentPeak) correct = true;
-  if (playerGuess === "lower" && nextPeak < currentPeak) correct = true;
-  if (playerGuess === "same" && nextPeak === currentPeak) correct = true;
+  const notifications = document.getElementById("notifications");
+  const scoreDisplay = document.getElementById("score-tracking");
 
-  const notificationArea = document.getElementById("notifications");
-  const scoreArea = document.getElementById("score-tracking");
-
-  const notification = document.createElement("p");
-  notification.textContent = correct ? "Correct! ✅" : "Wrong! ❌";
-  notificationArea.appendChild(notification);
-
-  const scoreNotification = document.createElement("p");
-  scoreNotification.textContent = `The next song peaked at position ${nextPeak}.`;
-  notificationArea.appendChild(scoreNotification);
+  notifications.innerHTML = `
+    <p>${correct ? "Correct! ✅" : "Wrong! ❌"}</p>
+    <p>The next song peaked at position ${nextSong.peak}.</p>
+  `;
 
   if (correct) score++;
-  scoreArea.textContent = `Score: ${score} / 10`;
+  scoreDisplay.textContent = `Score: ${score} / 10`;
 
-  // Disable buttons to prevent multiple clicks
+  // Disable buttons
   document.querySelectorAll(".game-button").forEach((btn) => (btn.disabled = true));
 
-  // Next Song Button
-  const nextSongButton = document.createElement("button");
-  nextSongButton.textContent = "Next Song";
-  nextSongButton.onclick = showNextSong;
-  notificationArea.appendChild(nextSongButton);
+  // Move to next song after a short delay
+  currentIndex++;
+  setTimeout(showNextSong, 1000);
 }
 
-// Function to end the game
+// End the game
 function endGame() {
   document.getElementById("song-container").style.display = "none";
   document.getElementById("game-over").style.display = "block";
@@ -192,28 +187,35 @@ function endGame() {
   lastScoreDisplay();
 
   songs = [];
+  gameSongs = [];
   currentIndex = 0;
   score = 0;
-  gameSongs = [];
   document.getElementById("yearDropdown").selectedIndex = 0;
 }
 
-// Facebook Share Button
-const fbButton = document.getElementById('fb-share-button');
+// Facebook Share
+const fbButton = document.getElementById("fb-share-button");
 const url = window.location.href;
-fbButton.addEventListener('click', function () {
+fbButton.addEventListener("click", function () {
   window.open(
-    'https://www.facebook.com/sharer/sharer.php?u=' + url,
-    'facebook-share-dialog',
-    'width=800,height=600'
+    "https://www.facebook.com/sharer/sharer.php?u=" + url,
+    "facebook-share-dialog",
+    "width=800,height=600"
   );
   return false;
 });
 
 // Font Selector
-document.getElementById('fontSelector').addEventListener('change', function() {
+document.getElementById("fontSelector").addEventListener("change", function () {
   const selectedFont = this.value;
-  if (selectedFont !== 'placeholder') {
-    document.documentElement.style.setProperty('--primary-font', selectedFont);
+  if (selectedFont !== "placeholder") {
+    document.documentElement.style.setProperty("--primary-font", selectedFont);
+  }
+});
+
+// Optional: Enter key for next song
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    showNextSong();
   }
 });
