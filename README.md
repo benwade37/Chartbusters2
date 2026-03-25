@@ -6,7 +6,7 @@ Test your pop knowledge in this epic battle based on official UK chart positions
 
 This website has been created to fulfill the project brief for Code Institute's JavaScript Hackathon assessment created by Jake Richards, Ben Wade, Paul O'Sullivan and Francesca Waters.
 
-Live link:
+Live link: https://benwade37.github.io/Chartbusters2/
 
 ## Table of Contents
 
@@ -185,7 +185,7 @@ This project was deployed on GitHub. Below are the steps followed to deploy the 
 4. Once the main branch has been selected, hit the save button.
 5. Finally, when the page is refreshed, a detailed ribbon display will indicate the successful deployment.
 
-The live link can be found here: [Chartbusters Live](https://jakecrichards.github.io/Chartbusters/)
+The live link can be found here: [Chartbusters Live](https://benwade37.github.io/Chartbusters2/)
 
 ## **Credits**
 
