@@ -47,7 +47,7 @@ function startGame() {
   document.getElementById("song-container").style.display = "none";
 
   // Fetch songs from JSON file and get 11 random songs
-  fetch(`./assets/json/Songs/${selectedYear}-EOY-Songs.json`)
+  fetch(`./assets/json/${selectedYear}-EOY-Songs.json`)
     .then((response) => response.json())
     .then((data) => {
       songs = data.content.sections[0].content[0].content[0].chartItems.map(

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +19,15 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 
+    <style>
+      body {
+        background-color: #f0f0f0;
+      }
+
+      .container {
+        padding: 20px;
+      }
+    </style>
   </head>
 
   <body class="d-flex flex-column min-vh-100 game-page">
@@ -43,7 +51,7 @@
                       data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
                       id="accordion-button">
 
-                      Want to see how to play? Click here!
+                      Want to see how to play? Click here
                     </button>
                   </h3>
                   <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#rulesAccordion">
@@ -61,9 +69,7 @@
                 </div>
               </div>
               <p class="my-3">
-                Use your ultimate music knowledge to see where a tune peaked
-                against its chart rival and settle old scores with your pop
-                foes.
+                Settle old pop rivalries and defeat your pop foes — use your music knowledge to pick who charted higher
               </p>
                       <select class="form-select text-center" id="yearDropdown" aria-label="Select Year">
                       <option value="placeholder">Select Year</option>
@@ -106,6 +112,8 @@
       </section>
       <section class="text-center">
         <div id="song-container" class="container"></div>
+
+        <div class="container"></div>
 
         <div id="game-over">
           <h2>Game Over!</h2>
@@ -158,8 +166,7 @@
       crossorigin="anonymous"></script>
       
     <!-- Other JavaScript -->
-    <script src="assets/js/script.js"></script>
-    
+    <script src="assets/script.js"></script>
   </body>
 
-</html>
+</html> .
