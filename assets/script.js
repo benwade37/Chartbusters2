@@ -1,34 +1,34 @@
 // ======================
 // Global Variables
 // ======================
-let songs = [];        // All songs for selected year
-let gameSongs = [];    // 11 songs for this game
-let currentIndex = 0;  // Index in gameSongs
-let score = 0;         // Player score
+let songs = []; // All songs for the selected year
+let currentIndex = 0; // Which song we are on
+let score = 0; // Player score
+let gameSongs = []; // 11 random songs for this game
 
-lastScoreDisplay();    // Show last score if available
+lastScoreDisplay(); // Show last score if available
 
 // ======================
-// Show Last Score
+// Display Last Score
 // ======================
 function lastScoreDisplay() {
   const scoreUpdate = document.getElementById("game-intro");
   const previousScore = localStorage.getItem("score");
 
   if (previousScore) {
-    let scorePara = document.getElementById("previous-score");
-    if (scorePara) scorePara.remove();
+    const scoreUpdateParagraph = document.createElement("p");
+    scoreUpdateParagraph.id = "previous-score";
 
-    scorePara = document.createElement("p");
-    scorePara.id = "previous-score";
-
-    if (previousScore < 10) {
-      scorePara.textContent = `Your last score was ${previousScore} / 10. Can you beat it?`;
-    } else {
-      scorePara.textContent = `Congratulations! You previously scored ${previousScore} / 10. Can you do it again?`;
+    if (document.getElementById("previous-score")) {
+      document.getElementById("previous-score").remove();
     }
 
-    scoreUpdate.appendChild(scorePara);
+    scoreUpdateParagraph.textContent =
+      previousScore < 10
+        ? `Your last score was ${previousScore} / 10. Can you beat it?`
+        : `Congratulations! You previously scored ${previousScore} / 10. Can you do it again?`;
+
+    scoreUpdate.appendChild(scoreUpdateParagraph);
   }
 }
 
@@ -42,37 +42,39 @@ function startGame() {
     return;
   }
 
-  // Reset variables
+  // Reset game
   songs = [];
-  gameSongs = [];
   currentIndex = 0;
   score = 0;
+  gameSongs = [];
   document.getElementById("song-container").style.display = "none";
 
-  // Try main JSON path
+  // Dynamic JSON path
   let jsonPath = `./assets/json/${selectedYear}-EOY-Songs.json`;
 
   fetch(jsonPath)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
-        // fallback to 'songs' subfolder
+        // fallback to subfolder
         jsonPath = `./assets/json/songs/${selectedYear}-EOY-Songs.json`;
         return fetch(jsonPath);
       }
       return response;
     })
-    .then(response => {
+    .then((response) => {
       if (!response.ok) throw new Error("Songs JSON not found");
       return response.json();
     })
-    .then(data => {
-      songs = data.content.sections[0].content[0].content[0].chartItems.map(song => ({
-        title: song.title,
-        artist: song.artist,
-        peak: song.peak,
-        image: song.imageSrcSmall,
-        audio: song.audioSrc
-      }));
+    .then((data) => {
+      songs = data.content.sections[0].content[0].content[0].chartItems.map(
+        (song) => ({
+          title: song.title,
+          artist: song.artist,
+          peak: song.peak,
+          image: song.imageSrcSmall,
+          audio: song.audioSrc,
+        })
+      );
 
       gameSongs = getRandomSongs();
       showNextSong();
@@ -80,21 +82,23 @@ function startGame() {
       document.getElementById("song-container").style.display = "block";
       document.getElementById("game-over").style.display = "none";
     })
-    .catch(error => {
+    .catch((error) => {
       alert("Could not load songs for the selected year.");
       console.error(error);
     });
 }
 
 // ======================
-// Get 11 Random Songs
+// Get Random Songs
 // ======================
 function getRandomSongs(count = 11) {
-  const validSongs = songs.filter(song => song.audio && song.image.includes("http"));
-  if (!validSongs.length) {
+  const validSongs = songs.filter((song) => song.audio && song.image.includes("http"));
+
+  if (validSongs.length === 0) {
     alert("No valid songs found for this year.");
     return [];
   }
+
   const shuffled = validSongs.sort(() => 0.5 - Math.random());
   return shuffled.slice(0, Math.min(count, shuffled.length));
 }
@@ -110,6 +114,12 @@ function showNextSong() {
 
   const currentSong = gameSongs[currentIndex];
   const nextSong = gameSongs[currentIndex + 1];
+
+  if (!currentSong || !nextSong) {
+    console.error("Missing song data", currentIndex, gameSongs);
+    endGame();
+    return;
+  }
 
   document.getElementById("song-container").innerHTML = `
     <div class="game-wrapper row align-items-center">
@@ -164,13 +174,14 @@ function showNextSong() {
 }
 
 // ======================
-// Guess Logic
+// Guess Function
 // ======================
 function guess(playerGuess) {
   const currentSong = gameSongs[currentIndex];
   const nextSong = gameSongs[currentIndex + 1];
   let correct = false;
 
+  // Correct higher/lower logic
   if (playerGuess === "higher" && nextSong.peak < currentSong.peak) correct = true;
   if (playerGuess === "lower" && nextSong.peak > currentSong.peak) correct = true;
   if (playerGuess === "same" && nextSong.peak === currentSong.peak) correct = true;
@@ -178,18 +189,34 @@ function guess(playerGuess) {
   const notifications = document.getElementById("notifications");
   const scoreDisplay = document.getElementById("score-tracking");
 
-  notifications.innerHTML = `
-    <p>${correct ? "Correct! ✅" : "Wrong! ❌"}</p>
-    <p>The next song peaked at position ${nextSong.peak}.</p>
-  `;
+  // Clear previous notifications
+  notifications.innerHTML = "";
 
+  // Show result
+  const result = document.createElement("p");
+  result.textContent = correct ? "Correct! ✅" : "Wrong! ❌";
+  notifications.appendChild(result);
+
+  const peakInfo = document.createElement("p");
+  peakInfo.textContent = `The next song peaked at position ${nextSong.peak}.`;
+  notifications.appendChild(peakInfo);
+
+  // Update score
   if (correct) score++;
   scoreDisplay.textContent = `Score: ${score} / 10`;
 
+  // Disable guess buttons
   document.querySelectorAll(".game-button").forEach(btn => btn.disabled = true);
 
-  currentIndex++;
-  setTimeout(showNextSong, 1000);
+  // Add "Next Song" button
+  const nextButton = document.createElement("button");
+  nextButton.textContent = "Next Song";
+  nextButton.className = "game-button";
+  nextButton.onclick = () => {
+    currentIndex++;
+    showNextSong();
+  };
+  notifications.appendChild(nextButton);
 }
 
 // ======================
@@ -204,18 +231,18 @@ function endGame() {
   lastScoreDisplay();
 
   songs = [];
-  gameSongs = [];
   currentIndex = 0;
   score = 0;
+  gameSongs = [];
   document.getElementById("yearDropdown").selectedIndex = 0;
 }
 
 // ======================
-// Facebook Share
+// Facebook Share Button
 // ======================
 const fbButton = document.getElementById('fb-share-button');
 const url = window.location.href;
-fbButton.addEventListener('click', () => {
+fbButton.addEventListener('click', function () {
   window.open(
     'https://www.facebook.com/sharer/sharer.php?u=' + url,
     'facebook-share-dialog',
@@ -228,7 +255,8 @@ fbButton.addEventListener('click', () => {
 // Font Selector
 // ======================
 document.getElementById('fontSelector').addEventListener('change', function() {
-  if (this.value !== 'placeholder') {
-    document.documentElement.style.setProperty('--primary-font', this.value);
+  const selectedFont = this.value;
+  if (selectedFont !== 'placeholder') {
+    document.documentElement.style.setProperty('--primary-font', selectedFont);
   }
 });
