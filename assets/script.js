@@ -142,7 +142,7 @@ function showNextSong() {
       <div class="col-md-4">
         <div class="vs">
           <h3>Banger or Clanger?</h3>
-          <h4>Did the new song on the right chart:</h4>
+          <h4>Did the new song chart:</h4>
           <button class="game-button" onclick="guess('lower')">Lower</button>
           <button class="game-button" onclick="guess('same')">Same</button>
           <button class="game-button" onclick="guess('higher')">Higher</button>
